@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - HostelFix{% endblock %}
+
+{% block content %}
+<section class="page-band">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Warden/Admin Module</span>
+                <h1>Complaint Control Center</h1>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-3"><div class="metric-card"><span>Total Complaints</span><strong>{{ stats.total }}</strong></div></div>
+            <div class="col-md-3"><div class="metric-card pending"><span>Pending</span><strong>{{ stats.pending }}</strong></div></div>
+            <div class="col-md-3"><div class="metric-card progress-state"><span>In Progress</span><strong>{{ stats.progress }}</strong></div></div>
+            <div class="col-md-3"><div class="metric-card resolved"><span>Resolved</span><strong>{{ stats.resolved }}</strong></div></div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="data-panel">
+                    <div class="panel-toolbar">
+                        <h2>All Complaints</h2>
+                        <form class="filter-form" method="get">
+                            <select class="form-select" name="status" onchange="this.form.submit()">
+                                {% for item in ['All', 'Pending', 'In Progress', 'Resolved'] %}
+                                    <option value="{{ item }}" {% if status_filter == item %}selected{% endif %}>{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                            <select class="form-select" name="category" onchange="this.form.submit()">
+                                <option value="All">All Categories</option>
+                                {% for item in categories %}
+                                    <option value="{{ item.category }}" {% if category_filter == item.category %}selected{% endif %}>{{ item.category }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+
+                    {% if complaints %}
+                        <div class="complaint-list">
+                            {% for complaint in complaints %}
+                                <article class="complaint-card">
+                                    <div class="complaint-top">
+                                        <div>
+                                            <span class="ticket-id">HF-{{ "%04d"|format(complaint.id) }}</span>
+                                            <h3>{{ complaint.title }}</h3>
+                                            <p>{{ complaint.description }}</p>
+                                        </div>
+                                        <span class="status-chip {{ complaint.status|lower|replace(' ', '-') }}">{{ complaint.status }}</span>
+                                    </div>
+                                    <div class="complaint-meta">
+                                        <span>{{ complaint.category }}</span>
+                                        <span>{{ complaint.priority }} Priority</span>
+                                        <span>{{ complaint.student_name }} - {{ complaint.hostel }} {{ complaint.room_no }}</span>
+                                        <span>{{ complaint.created_at.strftime('%d %b %Y') }}</span>
+                                    </div>
+                                    {% if complaint.image_filename %}
+                                        <a class="attachment-link" href="{{ url_for('uploaded_file', filename=complaint.image_filename) }}" target="_blank">View uploaded image</a>
+                                    {% endif %}
+                                    <form class="admin-update" action="{{ url_for('update_complaint', complaint_id=complaint.id) }}" method="post">
+                                        <select class="form-select" name="assigned_to">
+                                            <option value="">Assign staff</option>
+                                            {% for person in staff %}
+                                                <option value="{{ person.id }}" {% if complaint.assigned_to == person.id %}selected{% endif %}>{{ person.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <select class="form-select" name="status">
+                                            {% for item in ['Pending', 'In Progress', 'Resolved'] %}
+                                                <option value="{{ item }}" {% if complaint.status == item %}selected{% endif %}>{{ item }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input class="form-control" name="admin_note" value="{{ complaint.admin_note or '' }}" placeholder="Admin note">
+                                        <button class="btn btn-primary" type="submit">Update</button>
+                                    </form>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <h3>No complaints found</h3>
+                            <p>Try changing the status or category filter.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="data-panel sticky-panel">
+                    <h2>Category Count</h2>
+                    <div class="category-list">
+                        {% for item in categories %}
+                            <div class="category-row">
+                                <span>{{ item.category }}</span>
+                                <strong>{{ item.total }}</strong>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No category data yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

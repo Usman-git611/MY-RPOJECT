@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}My Complaints - HostelFix{% endblock %}
+
+{% block content %}
+<section class="page-band">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Student Portal</span>
+                <h1>My Complaint Tracker</h1>
+            </div>
+            <a href="{{ url_for('submit_complaint') }}" class="btn btn-primary">Submit New Complaint</a>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-3"><div class="metric-card"><span>Total</span><strong>{{ stats.total }}</strong></div></div>
+            <div class="col-md-3"><div class="metric-card pending"><span>Pending</span><strong>{{ stats.pending }}</strong></div></div>
+            <div class="col-md-3"><div class="metric-card progress-state"><span>In Progress</span><strong>{{ stats.progress }}</strong></div></div>
+            <div class="col-md-3"><div class="metric-card resolved"><span>Resolved</span><strong>{{ stats.resolved }}</strong></div></div>
+        </div>
+
+        <div class="data-panel">
+            {% if complaints %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Complaint</th>
+                                <th>Category</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Assigned Staff</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for complaint in complaints %}
+                                <tr>
+                                    <td class="fw-semibold">HF-{{ "%04d"|format(complaint.id) }}</td>
+                                    <td>
+                                        <strong>{{ complaint.title }}</strong>
+                                        <div class="text-muted small">{{ complaint.created_at.strftime('%d %b %Y, %I:%M %p') }}</div>
+                                    </td>
+                                    <td>{{ complaint.category }}</td>
+                                    <td><span class="priority-chip">{{ complaint.priority }}</span></td>
+                                    <td><span class="status-chip {{ complaint.status|lower|replace(' ', '-') }}">{{ complaint.status }}</span></td>
+                                    <td>{{ complaint.assigned_staff_name or 'Not assigned' }}</td>
+                                    <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('track_complaint', complaint_id=complaint.id) }}">Track</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No complaints yet</h3>
+                    <p>When something needs fixing, submit it here and track the complete journey.</p>
+                    <a href="{{ url_for('submit_complaint') }}" class="btn btn-primary">Submit First Complaint</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

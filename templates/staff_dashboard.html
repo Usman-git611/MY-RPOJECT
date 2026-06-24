@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Staff Dashboard - HostelFix{% endblock %}
+
+{% block content %}
+<section class="page-band">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Maintenance Staff</span>
+                <h1>Assigned Complaints</h1>
+            </div>
+        </div>
+
+        <div class="data-panel">
+            {% if complaints %}
+                <div class="complaint-list">
+                    {% for complaint in complaints %}
+                        <article class="complaint-card">
+                            <div class="complaint-top">
+                                <div>
+                                    <span class="ticket-id">HF-{{ "%04d"|format(complaint.id) }}</span>
+                                    <h3>{{ complaint.title }}</h3>
+                                    <p>{{ complaint.description }}</p>
+                                </div>
+                                <span class="status-chip {{ complaint.status|lower|replace(' ', '-') }}">{{ complaint.status }}</span>
+                            </div>
+                            <div class="complaint-meta">
+                                <span>{{ complaint.category }}</span>
+                                <span>{{ complaint.priority }} Priority</span>
+                                <span>{{ complaint.student_name }} - {{ complaint.hostel }} {{ complaint.room_no }}</span>
+                            </div>
+                            <form class="admin-update staff-update" action="{{ url_for('staff_update_complaint', complaint_id=complaint.id) }}" method="post">
+                                <select class="form-select" name="status">
+                                    <option value="In Progress" {% if complaint.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="Resolved" {% if complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                </select>
+                                <input class="form-control" name="admin_note" value="{{ complaint.admin_note or '' }}" placeholder="Work note">
+                                <button class="btn btn-primary" type="submit">Update Work</button>
+                            </form>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No assigned complaints</h3>
+                    <p>Assigned maintenance work will appear here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

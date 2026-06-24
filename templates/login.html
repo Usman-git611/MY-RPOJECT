@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Login - HostelFix{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="hero-copy">
+                    <span class="eyebrow">Smart Hostel Complaint Management</span>
+                    <h1>Fix hostel problems before they become hostel legends.</h1>
+                    <p>Submit complaints digitally, track every update, and help wardens resolve water, electricity, Wi-Fi, furniture, and cleanliness issues faster.</p>
+                    <div class="hero-pills">
+                        <span>Live status tracking</span>
+                        <span>Admin assignment</span>
+                        <span>Category analytics</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="auth-card">
+                    <ul class="nav nav-pills nav-fill mb-4" id="authTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#loginPanel" type="button">Login</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#registerPanel" type="button">Student Register</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="loginPanel">
+                            <form action="{{ url_for('login') }}" method="post" class="stack-form">
+                                <div>
+                                    <label class="form-label">Email Address</label>
+                                    <input class="form-control form-control-lg" type="email" name="email" placeholder="admin@hostelfix.com" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Password</label>
+                                    <input class="form-control form-control-lg" type="password" name="password" placeholder="admin123" required>
+                                </div>
+                                <button class="btn btn-primary btn-lg w-100" type="submit">Login</button>
+                            </form>
+                            <div class="demo-box mt-4">
+                                <strong>Demo admin:</strong> admin@hostelfix.com<br>
+                                <strong>Password:</strong> admin123
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="registerPanel">
+                            <form action="{{ url_for('register') }}" method="post" class="stack-form">
+                                <div>
+                                    <label class="form-label">Full Name</label>
+                                    <input class="form-control" type="text" name="name" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Email Address</label>
+                                    <input class="form-control" type="email" name="email" required>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Hostel</label>
+                                        <input class="form-control" type="text" name="hostel" placeholder="Block A" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Room No.</label>
+                                        <input class="form-control" type="text" name="room_no" placeholder="203" required>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="form-label">Password</label>
+                                    <input class="form-control" type="password" name="password" minlength="6" required>
+                                </div>
+                                <button class="btn btn-primary w-100" type="submit">Create Student Account</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

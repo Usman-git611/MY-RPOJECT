@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Track Complaint - HostelFix{% endblock %}
+
+{% block content %}
+<section class="page-band">
+    <div class="container narrow">
+        <div class="tracking-hero">
+            <span class="ticket-id">HF-{{ "%04d"|format(complaint.id) }}</span>
+            <h1>{{ complaint.title }}</h1>
+            <p>{{ complaint.description }}</p>
+            <span class="status-chip {{ complaint.status|lower|replace(' ', '-') }}">{{ complaint.status }}</span>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="data-panel">
+                    <h2>Status Timeline</h2>
+                    {% set steps = ['Pending', 'In Progress', 'Resolved'] %}
+                    <div class="timeline">
+                        {% for step in steps %}
+                            {% set active = steps.index(step) <= steps.index(complaint.status) %}
+                            <div class="timeline-step {% if active %}active{% endif %}">
+                                <div class="timeline-dot"></div>
+                                <div>
+                                    <strong>{{ step }}</strong>
+                                    {% if step == 'Pending' %}
+                                        <p>Complaint received by hostel office.</p>
+                                    {% elif step == 'In Progress' %}
+                                        <p>Complaint assigned and maintenance work started.</p>
+                                    {% else %}
+                                        <p>Issue resolved and marked complete.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="data-panel">
+                    <h2>Complaint Details</h2>
+                    <dl class="detail-list">
+                        <div><dt>Student</dt><dd>{{ complaint.student_name }}</dd></div>
+                        <div><dt>Hostel / Room</dt><dd>{{ complaint.hostel }} / {{ complaint.room_no }}</dd></div>
+                        <div><dt>Category</dt><dd>{{ complaint.category }}</dd></div>
+                        <div><dt>Priority</dt><dd>{{ complaint.priority }}</dd></div>
+                        <div><dt>Assigned Staff</dt><dd>{{ complaint.assigned_staff_name or 'Not assigned yet' }}</dd></div>
+                        <div><dt>Submitted</dt><dd>{{ complaint.created_at.strftime('%d %b %Y, %I:%M %p') }}</dd></div>
+                        {% if complaint.resolved_at %}
+                            <div><dt>Resolved</dt><dd>{{ complaint.resolved_at.strftime('%d %b %Y, %I:%M %p') }}</dd></div>
+                        {% endif %}
+                    </dl>
+                    {% if complaint.admin_note %}
+                        <div class="note-box">
+                            <strong>Admin Note</strong>
+                            <p>{{ complaint.admin_note }}</p>
+                        </div>
+                    {% endif %}
+                    {% if complaint.image_filename %}
+                        <img class="complaint-image" src="{{ url_for('uploaded_file', filename=complaint.image_filename) }}" alt="Complaint upload">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
