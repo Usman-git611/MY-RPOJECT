@@ -31,14 +31,14 @@ python -m pip install --target .vendor -r requirements.txt
 mysql -u root -p < schema.sql
 ```
 
-3. Optional database environment variables:
+3. Create a `.env` file for your MySQL login:
 
-```bash
-set MYSQL_HOST=localhost
-set MYSQL_USER=root
-set MYSQL_PASSWORD=your_password
-set MYSQL_DATABASE=hostelfix
-set MYSQL_PORT=3306
+```text
+MYSQL_HOST=localhost
+MYSQL_USER=root
+MYSQL_PASSWORD=your_mysql_password
+MYSQL_DATABASE=hostelfix
+MYSQL_PORT=3306
 ```
 
 4. Run the app:
